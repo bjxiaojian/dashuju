@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <bean id="phoenixJdbcTemplate"
+          class="org.springframework.jdbc.core.JdbcTemplate">
+        <constructor-arg ref="phoenixDataSource"/>
+        <qualifier value="phoenixJdbcTemplate"></qualifier>
+    </bean>
+
+
+    <bean id="baseInterfacePonenixImpl" class="com.swt.hbase.HbaseJdbc">
+        <property name="jdbcTemplate" ref="phoenixJdbcTemplate"/>
+    </bean>
+
+
+    <context:component-scan base-package="com.swt.hbase"/>
+
+
+    <bean id="phoenixDataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.apache.phoenix.jdbc.PhoenixDriver"/>
+        <property name="url" value="jdbc:phoenix:192.168.57.4:2181"/>
+        <property name="username" value=""/>
+        <property name="password" value=""/>
+        <property name="initialSize" value="20"/>
+        <property name="maxActive" value="0"/>
+        <!--因为Phoenix进行数据更改时不会自动的commit,必须要添加defaultAutoCommit属性,否则会导致数据无法提交的情况-->
+        <property name="defaultAutoCommit" value="true"/>
+    </bean>
+</beans>
